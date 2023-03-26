@@ -1,0 +1,28 @@
+<book>
+<title>Title</title>
+<p>line 1
+<pb />
+line 2</p>
+
+<p>line 1
+<i>line 2 italic</i></p>
+
+<p>line 1 <b>bold</b>
+line 2</p>
+
+<p>line 1 <b>bold</b>
+<i>line 2 italic</i></p>
+
+<p>line 1 <sc>caps</sc>
+<pb />
+line 2</p>
+
+<p>line 1
+line 2
+<pb /></p>
+
+<p>paragraph 1</p>
+<pb />
+<p>paragraph 2</p>
+
+</book>

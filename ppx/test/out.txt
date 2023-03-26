@@ -1,0 +1,22 @@
+
+line 1
+line 2
+
+line 1
+_line 2 italic_
+
+line 1 =bold=
+line 2
+
+line 1 =bold=
+_line 2 italic_
+
+line 1 CAPS
+line 2
+
+line 1
+line 2
+
+paragraph 1
+
+paragraph 2

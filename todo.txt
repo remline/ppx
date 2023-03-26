@@ -1,0 +1,13 @@
+Handle /* ----Page */ and /# ----Page #/
+handle merged paragraphs
+page anchors with no tail text should be moved to their next heading/paragraph/illustration
+add <toc> support
+    text: act as blockquote for
+    html: convert numbers at end of line to page links
+validate footnotes per page
+syntax check:
+    ---
+    -----
+    ..... (already done?)
+    check PP FAQ for any missing
+move syntax check to its own file, separate from quotes

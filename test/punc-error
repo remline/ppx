@@ -1,0 +1,44 @@
+End punctuation,Next
+End punctuation!Next
+End punctuation?Next
+End punctuation;Next
+End punctuation:Next
+Trailing space .
+Trailing space ,
+Trailing space !
+Trailing space ?
+Trailing space ;
+Trailing space :
+two..
+two,,
+two;;
+two::
+Why..... so many dots?
+quote " word
+quote ' word
+" start of line
+' start of line
+end of line "
+end of line '
+consecutive "" quote
+consecutive '' single quote
+“two lquotes“
+”two rquotes”
+[**proofing note]
+[Illustration:Lively.]
+Isn‘t correct single quote
+)
+([)
+[{]
+"[handle quotes)"
+["handle quotes")
+{<}
+<(>
+Trailing space 
+merged""quote
+merged''single quote
+""start
+''start
+end""
+end''
+[[[]

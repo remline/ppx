@@ -1,0 +1,44 @@
+line 1: Bad sequence <,N>
+line 2: Bad sequence <!N>
+line 3: Bad sequence <?N>
+line 4: Bad sequence <;N>
+line 5: Bad sequence <:N>
+line 6: Bad sequence < .>
+line 7: Bad sequence < ,>
+line 8: Bad sequence < !>
+line 9: Bad sequence < ?>
+line 10: Bad sequence < ;>
+line 11: Bad sequence < :>
+line 12: Bad sequence <..>
+line 13: Bad sequence <,,>
+line 14: Bad sequence <;;>
+line 15: Bad sequence <::>
+line 16: Bad sequence <.....>
+line 17: Bad sequence < " >
+line 18: Bad sequence < ' >
+line 19: Bad sequence <" >
+line 20: Bad sequence <' >
+line 21: Bad sequence < ">
+line 22: Bad sequence < '>
+line 23: Bad sequence < "">
+line 24: Bad sequence < ''>
+line 25: Bad sequence <s“>
+line 26: Bad sequence <”t>
+line 27: Bad sequence <**>
+line 28: Bad sequence <:L>
+line 29: Bad sequence <n‘>
+line 30: Found ')' without '('
+line 31: Found ')' after '['
+line 32: Found ']' after '{'
+line 33: Found ')' after '['
+line 34: Found ')' after '['
+line 35: Found '}' after '<'
+line 36: Found '>' after '('
+line 37: Trailing space
+line 38: Bad sequence <"">
+line 39: Bad sequence <d''>
+line 40: Bad sequence <"">
+line 41: Bad sequence <''>
+line 42: Bad sequence <"">
+line 43: Bad sequence <d''>
+End of file: Unclosed '['
