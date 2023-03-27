@@ -1,5 +1,5 @@
 __pycache__/
-/punc
+lex/punc
 punc.c
-/xml
+lex/xml
 xml.c
