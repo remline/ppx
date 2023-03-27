@@ -1,5 +1,5 @@
-ppx/__pycache__/
-punc
+__pycache__/
+/punc
 punc.c
-xml
+/xml
 xml.c
