@@ -20,7 +20,7 @@ def get_output(line):
     """Get the syntax checker's stderr output for the given input line."""
     # All tests are designed to work on a complete line
     line += '\n'
-    result = subprocess.run('lex/punc', input=line, encoding='utf-8',
+    result = subprocess.run('lex/syntax', input=line, encoding='utf-8',
                             stderr=subprocess.PIPE, check=False)
     return result.stderr.rstrip('\n')
 

@@ -1,5 +1,5 @@
 %option noyywrap stack warn yylineno
-%option outfile="punc.c"
+%option outfile="syntax.c"
 
 %{
 #include <stdlib.h>
@@ -7,16 +7,10 @@
 static void check_pair(char c);
 static void error();
 static void error_str(const char * s);
-static void open_qs();
-static void close_qs();
 %}
 
 OPEN            [(\[{<]
 CLOS            [)\]}>]
-PREQUOTE        {OPEN}|[ \-]
-POSTQUOTE       {CLOS}|[ \-.,!?;:]
-QS              '|\"|'\"|\"'
-CONTRACTION     em|gainst|tis|twas|twere|twould
 
 %%
 " \" "          error();
@@ -43,15 +37,6 @@ CONTRACTION     em|gainst|tis|twas|twere|twould
 "**"            error();
 [ ]$            error_str("Trailing space");
 
-{PREQUOTE}{QS}  open_qs();
-^{QS}           open_qs();
--?{QS}{POSTQUOTE} close_qs();
-{QS}$           close_qs();
-
-[^ "\n]'        close_qs();
-(?i:[ ]?'{CONTRACTION}) close_qs();
-'               open_qs();
-\"              open_qs();
 "...."          |
 [ ]?"..."       ECHO;
 
@@ -139,30 +124,4 @@ static void error_str(const char * s) {
     fprintf(stderr, "line %i: %s\n", yylineno, s);
     is_error = 1;
     ECHO;
-}
-
-static void open_qs() {
-    for (int i = 0; i < yyleng; i++) {
-        switch (yytext[i]) {
-            case '"':  printf("“"); break;
-            case '\'': printf("‘"); break;
-            default:
-                printf("%c", yytext[i]);
-                check_pair(yytext[i]);
-                break;
-            }
-        }
-}
-
-static void close_qs() {
-    for (int i = 0; i < yyleng; i++) {
-        switch (yytext[i]) {
-            case '"':  printf("”"); break;
-            case '\'': printf("’"); break;
-            default:
-                printf("%c", yytext[i]);
-                check_pair(yytext[i]);
-                break;
-            }
-        }
 }

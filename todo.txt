@@ -10,4 +10,3 @@ syntax check:
     -----
     ..... (already done?)
     check PP FAQ for any missing
-move syntax check to its own file, separate from quotes

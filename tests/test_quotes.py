@@ -8,7 +8,7 @@ def check_syntax(line):
     """Get the syntax checker's stderr for the given input line.
     Verify that the checker reports no error.
     """
-    result = subprocess.run('lex/punc', input=line, encoding='utf-8',
+    result = subprocess.run('lex/syntax', input=line, encoding='utf-8',
                             stderr=subprocess.PIPE, check=False)
     assert result.stderr == ''
 
@@ -16,7 +16,7 @@ def get_output(line):
     """Get standard output for the given input line."""
     # All tests are designed to work on a complete line
     line += '\n'
-    result = subprocess.run('lex/punc', input=line, encoding='utf-8',
+    result = subprocess.run('lex/quotes', input=line, encoding='utf-8',
                             stdout=subprocess.PIPE, check=False)
     check_syntax(line)
     return result.stdout.rstrip('\n')
