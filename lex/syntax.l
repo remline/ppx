@@ -50,8 +50,11 @@ CLOS            [)\]}>]
 "----"              |
 "-----File: ".+     ECHO;
 
-{OPEN}          check_pair(yytext[0]); ECHO;
-{CLOS}          check_pair(yytext[0]); ECHO;
+{OPEN}              |
+{CLOS}              check_pair(yytext[0]); ECHO;
+
+{OPEN}[ ]           check_pair(yytext[0]); error();
+[ ]{CLOS}           check_pair(yytext[1]); error();
 %%
 
 enum {

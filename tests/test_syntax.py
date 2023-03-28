@@ -48,6 +48,20 @@ def test_trailing_space(line, sequence):
     assert get_output(line) == build_sequence_error(sequence)
 
 @pytest.mark.parametrize('line, sequence', [
+    ('( word)', '( '),
+    ('{ word}', '{ '),
+    ('[ word]', '[ '),
+    ('< word>', '< '),
+    ('(word )', ' )'),
+    ('{word }', ' }'),
+    ('[word ]', ' ]'),
+    ('<word >', ' >'),
+    ])
+def test_spaced_brackets(line, sequence):
+    """Space after an opening bracket or before a closing bracket."""
+    assert get_output(line) == build_sequence_error(sequence)
+
+@pytest.mark.parametrize('line, sequence', [
     ('two..', '..'),
     ('two,,', ',,'),
     ('two;;', ';;'),
