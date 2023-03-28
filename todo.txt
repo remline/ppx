@@ -8,5 +8,4 @@ validate footnotes per page
 syntax check:
     ---
     -----
-    ..... (already done?)
     check PP FAQ for any missing

@@ -35,15 +35,17 @@ CLOS            [)\]}>]
 ";;"            error();
 "::"            error();
 "**"            error();
+" ...."         error();
+"...."[[:alnum:]] error();
+"  ..."         error();
+"...  "         error();
+"....  "        error();
 [ ]$            error_str("Trailing space");
 
-"...."          |
 [ ]?"..."       ECHO;
 
 {OPEN}          check_pair(yytext[0]); ECHO;
 {CLOS}          check_pair(yytext[0]); ECHO;
-
-\n              ECHO;
 %%
 
 enum {

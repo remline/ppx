@@ -25,7 +25,6 @@ CONTRACTION     em|gainst|tis|twas|twere|twould
 (?i:[ ]?'{CONTRACTION}) close_qs();
 '               open_qs();
 \"              open_qs();
-\n              ECHO;
 %%
 
 int main() {

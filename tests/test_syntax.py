@@ -52,7 +52,6 @@ def test_trailing_space(line, sequence):
     ('two,,', ',,'),
     ('two;;', ';;'),
     ('two::', '::'),
-    ('Too many..... dots', '.....'),
     ('consecutive "" quote', ' ""'),
     ("consecutive '' quote", " ''"),
     ('""start of line', '""'),
@@ -64,6 +63,18 @@ def test_trailing_space(line, sequence):
     ])
 def test_duplicate_punctuation(line, sequence):
     """Duplicate punctuation marks."""
+    assert get_output(line) == build_sequence_error(sequence)
+
+@pytest.mark.parametrize('line, sequence', [
+    ('Five..... periods', '.....'),
+    ('One extra space ....', ' ....'),
+    ('Two extra space  ...', '  ...'),
+    ('...  two extra space', '...  '),
+    ('....  two extra space', '....  '),
+    ('Sentence....Sentence', '....S'),
+    ])
+def test_ellipsis(line, sequence):
+    """Ellipsis errors."""
     assert get_output(line) == build_sequence_error(sequence)
 
 @pytest.mark.parametrize('line, sequence', [
@@ -129,6 +140,8 @@ def test_end_of_line_space():
     'word space?',
     'An ellipsis ... is fine.',
     'An ellipsis.... is fine.',
+    'Really?... Oh',
+    'art thou Romeo...?',
     'Floating point 3.14 number.',
     'Floating point 3,14 number.',
     'Time is 7:50 A.M.',
