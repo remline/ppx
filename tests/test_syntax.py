@@ -103,6 +103,7 @@ def test_quote_problems(line, sequence):
 @pytest.mark.parametrize('line, sequence', [
     ('[**proofing note]', '**'),
     ('[Illustration:Caption.]', ':C'),
+    ('to-*day', '-*'),
     ])
 def test_proofing_marks(line, sequence):
     """Problems with PGDP proofreading syntax."""
