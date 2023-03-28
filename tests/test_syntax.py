@@ -165,6 +165,7 @@ def test_end_of_line_space():
     '<b>bold</b>',
     'two-em dash----',
     'em dash--',
+    '-----File: 064.png-------------------',
     ])
 def test_valid(line):
     """Valid syntax which should generate no error."""
