@@ -18,6 +18,8 @@ def build_sequence_error(sequence):
 
 def get_output(line):
     """Get the syntax checker's stderr output for the given input line."""
+    # All tests are designed to work on a complete line
+    line += '\n'
     result = subprocess.run('lex/punc', input=line, encoding='utf-8',
                             stderr=subprocess.PIPE, check=False)
     return result.stderr.rstrip('\n')
@@ -55,8 +57,8 @@ def test_trailing_space(line, sequence):
     ("consecutive '' quote", " ''"),
     ('""start of line', '""'),
     ("''start of line", "''"),
-    ('end of line""\n', '""'),
-    ("end of line''\n", "e''"),
+    ('end of line""', '""'),
+    ("end of line''", "e''"),
     ('merged""quote', '""'),
     ("merged''quote", "d''"),
     ])
@@ -69,8 +71,8 @@ def test_duplicate_punctuation(line, sequence):
     ("quote ' word", " ' "),
     ('" start of line', '" '),
     ("' start of line", "' "),
-    ('end of line "\n', ' "'),
-    ("end of line '\n", " '"),
+    ('end of line "', ' "'),
+    ("end of line '", " '"),
     ('“two lquotes“', 's“'),
     ('”two rquotes”', '”t'),
     ('Isn‘t correct apostrophe', 'n‘'),
@@ -110,4 +112,36 @@ def test_nesting_eof():
 
 def test_end_of_line_space():
     """Trailing space at the end of a line."""
-    assert get_output('End of line \n') == build_generic_error('Trailing space')
+    assert get_output('End of line ') == build_generic_error('Trailing space')
+
+@pytest.mark.parametrize('line', [
+    'End punctuation. Next',
+    'End punctuation, Next',
+    'End punctuation; Next',
+    'End punctuation: Next',
+    'End punctuation! Next',
+    'End punctuation? Next',
+    'word space.',
+    'word space,',
+    'word space;',
+    'word space:',
+    'word space!',
+    'word space?',
+    'An ellipsis ... is fine.',
+    'An ellipsis.... is fine.',
+    'Floating point 3.14 number.',
+    'Floating point 3,14 number.',
+    'Time is 7:50 A.M.',
+    'The U.S.A.',
+    'Nesting [{[<<([([])])>>]}]',
+    '[Illustration: Caption.]',
+    '()',
+    '[]',
+    '{}',
+    '<>',
+    '<i>italics</i>',
+    '<b>bold</b>',
+    ])
+def test_valid(line):
+    """Valid syntax which should generate no error."""
+    assert get_output(line) == ''
