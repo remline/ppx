@@ -35,6 +35,8 @@ CLOS            [)\]}>]
 ";;"                |
 "::"                |
 "**"                |
+"-----"             |
+"---"               |
 " ...."             |
 "...."[[:alnum:]]   |
 "  ..."             |
@@ -44,6 +46,7 @@ CLOS            [)\]}>]
 [ ]$            error_str("Trailing space");
 
 [ ]?"..."       ECHO;
+"----"          ECHO;
 
 {OPEN}          check_pair(yytext[0]); ECHO;
 {CLOS}          check_pair(yytext[0]); ECHO;

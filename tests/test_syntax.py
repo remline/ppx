@@ -78,6 +78,14 @@ def test_ellipsis(line, sequence):
     assert get_output(line) == build_sequence_error(sequence)
 
 @pytest.mark.parametrize('line, sequence', [
+    ('two-em dash-----too long', '-----'),
+    ('em dash---too long', '---'),
+    ])
+def test_dashes(line, sequence):
+    """Dash errors."""
+    assert get_output(line) == build_sequence_error(sequence)
+
+@pytest.mark.parametrize('line, sequence', [
     ('quote " word', ' " '),
     ("quote ' word", " ' "),
     ('" start of line', '" '),
@@ -154,6 +162,8 @@ def test_end_of_line_space():
     '<>',
     '<i>italics</i>',
     '<b>bold</b>',
+    'two-em dash----',
+    'em dash--',
     ])
 def test_valid(line):
     """Valid syntax which should generate no error."""
