@@ -55,6 +55,8 @@ CLOS            [)\]}>]
 
 {OPEN}[ ]           check_pair(yytext[0]); error();
 [ ]{CLOS}           check_pair(yytext[1]); error();
+
+\n                  ECHO; /* needed to count line numbers */
 %%
 
 enum {

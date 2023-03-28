@@ -148,6 +148,10 @@ def test_end_of_line_space():
     """Trailing space at the end of a line."""
     assert get_output('End of line ') == build_generic_error('Trailing space')
 
+def test_line_counter():
+    """The error message should state the line the error is on."""
+    assert get_output('1\n2\n3\n4,,\n5') == 'line 4: Bad sequence <,,>'
+
 @pytest.mark.parametrize('line', [
     'End punctuation. Next',
     'End punctuation, Next',
