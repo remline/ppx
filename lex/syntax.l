@@ -13,33 +13,34 @@ OPEN            [(\[{<]
 CLOS            [)\]}>]
 
 %%
-" \" "          error();
-^"\" "          error();
-" \""$          error();
-" ' "           error();
-^"' "           error();
-" '"$           error();
-[[:alnum:]]‘    error();
-[[:alnum:]]“    error();
-”[[:alnum:]]    error();
-" ."            error();
-" ,"            error();
-[ ][!?;:]       error();
-[!?;:][[:alpha:]] error();
-,[[:alpha:]]    error();
-"....."         error();
-[ ]?\"\"        error();
-.?''            error();
-".."            error();
-",,"            error();
-";;"            error();
-"::"            error();
-"**"            error();
-" ...."         error();
-"...."[[:alnum:]] error();
-"  ..."         error();
-"...  "         error();
-"....  "        error();
+" \" "              |
+^"\" "              error();
+" \""$              |
+" ' "               |
+^"' "               error();
+" '"$               |
+[[:alnum:]]‘        |
+[[:alnum:]]“        |
+”[[:alnum:]]        |
+" ."                |
+" ,"                |
+[ ][!?;:]           |
+[!?;:][[:alpha:]]   |
+,[[:alpha:]]        |
+"....."             |
+[ ]?\"\"            |
+.?''                |
+".."                |
+",,"                |
+";;"                |
+"::"                |
+"**"                |
+" ...."             |
+"...."[[:alnum:]]   |
+"  ..."             |
+"...  "             |
+"....  "            error();
+
 [ ]$            error_str("Trailing space");
 
 [ ]?"..."       ECHO;
