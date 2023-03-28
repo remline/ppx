@@ -5,5 +5,3 @@ add <toc> support
     text: act as blockquote for
     html: convert numbers at end of line to page links
 validate footnotes per page
-syntax check:
-    check PP FAQ for any missing

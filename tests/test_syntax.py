@@ -17,12 +17,12 @@ def build_sequence_error(sequence):
     return build_generic_error(f'Bad sequence <{sequence}>')
 
 def get_output(line):
-    """Get the syntax checker's stderr output for the given input line."""
+    """Get the syntax checker's output for the given input line."""
     # All tests are designed to work on a complete line
     line += '\n'
     result = subprocess.run('lex/syntax', input=line, encoding='utf-8',
-                            stderr=subprocess.PIPE, check=False)
-    return result.stderr.rstrip('\n')
+                            stdout=subprocess.PIPE, check=False)
+    return result.stdout.rstrip('\n')
 
 @pytest.mark.parametrize('line, sequence', [
     ('Sentence one,continued', ',c'),

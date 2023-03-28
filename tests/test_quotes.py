@@ -5,12 +5,12 @@ import subprocess
 import pytest
 
 def check_syntax(line):
-    """Get the syntax checker's stderr for the given input line.
+    """Get the syntax checker's output for the given input line.
     Verify that the checker reports no error.
     """
     result = subprocess.run('lex/syntax', input=line, encoding='utf-8',
-                            stderr=subprocess.PIPE, check=False)
-    assert result.stderr == ''
+                            stdout=subprocess.PIPE, check=False)
+    assert result.stdout == ''
 
 def get_output(line):
     """Get standard output for the given input line."""

@@ -46,17 +46,18 @@ CLOS            [)\]}>]
 
 [ ]$                error_str("Trailing space");
 
-[ ]?"..."           |
-"----"              |
-"-----File: ".+     ECHO;
+[ ]?"..."
+"----"
+"-----File: ".+
 
 {OPEN}              |
-{CLOS}              check_pair(yytext[0]); ECHO;
+{CLOS}              check_pair(yytext[0]);
 
 {OPEN}[ ]           check_pair(yytext[0]); error();
 [ ]{CLOS}           check_pair(yytext[1]); error();
 
-\n                  ECHO; /* needed to count line numbers */
+\n                  /* needed to count line numbers */
+.                   /* ignore all other tokens */
 %%
 
 enum {
@@ -71,7 +72,7 @@ int main() {
 yylex();
 
 if (cnt) {
-    fprintf(stderr, "End of file: Unclosed '%c'\n", stack[cnt-1]);
+    printf("End of file: Unclosed '%c'\n", stack[cnt-1]);
     is_error = 1;
     }
 
@@ -98,11 +99,11 @@ static void pop(char c) {
         }
 
     if (actual == 0) {
-        fprintf(stderr, "line %i: Found '%c' without '%c'\n", yylineno, c, pair);
+        printf("line %i: Found '%c' without '%c'\n", yylineno, c, pair);
         is_error = 1;
         }
     else if (actual != pair) {
-        fprintf(stderr, "line %i: Found '%c' after '%c'\n", yylineno, c, actual);
+        printf("line %i: Found '%c' after '%c'\n", yylineno, c, actual);
         is_error = 1;
         }
 }
@@ -128,13 +129,11 @@ static void check_pair(char c) {
 }
 
 static void error() {
-    fprintf(stderr, "line %i: Bad sequence <%s>\n", yylineno, yytext);
+    printf("line %i: Bad sequence <%s>\n", yylineno, yytext);
     is_error = 1;
-    ECHO;
 }
 
 static void error_str(const char * s) {
-    fprintf(stderr, "line %i: %s\n", yylineno, s);
+    printf("line %i: %s\n", yylineno, s);
     is_error = 1;
-    ECHO;
 }
