@@ -66,6 +66,9 @@ def test_spaced_brackets(line, sequence):
     ('two,,', ',,'),
     ('two;;', ';;'),
     ('two::', '::'),
+    ('two ““start', '““'),
+    ('two ‘‘start', '‘‘'),
+    ('two end””', '””'),
     ('consecutive "" quote', ' ""'),
     ("consecutive '' quote", " ''"),
     ('""start of line', '""'),
@@ -102,16 +105,32 @@ def test_dashes(line, sequence):
 @pytest.mark.parametrize('line, sequence', [
     ('quote " word', ' " '),
     ("quote ' word", " ' "),
+    ('quote"word', 'e"w'),
     ('" start of line', '" '),
     ("' start of line", "' "),
     ('end of line "', ' "'),
     ("end of line '", " '"),
-    ('“two lquotes“', 's“'),
-    ('”two rquotes”', '”t'),
-    ('Isn‘t correct apostrophe', 'n‘'),
     ])
 def test_quote_problems(line, sequence):
     """Quotation marks in the wrong place."""
+    assert get_output(line) == build_sequence_error(sequence)
+
+@pytest.mark.parametrize('line, sequence', [
+    ('word‘start', 'd‘'),
+    ('word“start', 'd“'),
+    ('end”word', '”w'),
+    ('Isn‘t correct apostrophe', 'n‘'),
+    ('“ space start', '“ '),
+    ('‘ space start', '‘ '),
+    ('end ”', ' ”'),
+    ('line end ’', ' ’'),
+    ('line end “', ' “'),
+    ('line end ‘', ' ‘'),
+    ('” line start', '”'),
+    ('’ line start', '’ '),
+    ])
+def test_curly_quote_problems(line, sequence):
+    """Curly quotes in the wrong place."""
     assert get_output(line) == build_sequence_error(sequence)
 
 @pytest.mark.parametrize('line, sequence', [
@@ -184,6 +203,10 @@ def test_line_counter():
     'two-em dash----',
     'em dash--',
     '-----File: 064.png-------------------',
+    'A “quote”.',
+    'A ‘quote’.',
+    'Abbreviate ’em',
+    '’twas at start of line',
     ])
 def test_valid(line):
     """Valid syntax which should generate no error."""
