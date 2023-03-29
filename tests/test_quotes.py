@@ -28,6 +28,7 @@ def get_output(line):
     ("quote at end'", 'quote at end’'),
     ('Multiple "words" "quoted" "here"', 'Multiple “words” “quoted” “here”'),
     ("Multiple 'words' 'quoted' 'here'", 'Multiple ‘words’ ‘quoted’ ‘here’'),
+    ('("Hmm...")', '(“Hmm...”)'),
     ('''Say "'American'".''', 'Say “‘American’”.'),
     ('''Say '"British"'.''', 'Say ‘“British”’.'),
     ('''"'American'"''', '“‘American’”'),
@@ -35,6 +36,9 @@ def get_output(line):
     ('''Isn't James' car''', 'Isn’t James’ car'),
     ('''It's the 'best' we can 'do\'''', 'It’s the ‘best’ we can ‘do’'),
     ('''the "'best' we can 'do'", he said.''', 'the “‘best’ we can ‘do’”, he said.'),
+    ("''Ere, young gen'l'men.'", '‘’Ere, young gen’l’men.’'),
+    ("He said: ''Ere, young gen'l'men.'", 'He said: ‘’Ere, young gen’l’men.’'),
+    ("'That's James'', he said", '‘That’s James’’, he said'),
     ])
 def test_quote_conversion(line, curly):
     """Curly quote conversion."""

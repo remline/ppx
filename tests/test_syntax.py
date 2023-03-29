@@ -70,13 +70,13 @@ def test_spaced_brackets(line, sequence):
     ('two ‘‘start', '‘‘'),
     ('two end””', '””'),
     ('consecutive "" quote', ' ""'),
-    ("consecutive '' quote", " ''"),
     ('""start of line', '""'),
-    ("''start of line", "''"),
+    ("word '' word", " '' "),
     ('end of line""', '""'),
-    ("end of line''", "e''"),
+    ("end of line''", "''"),
     ('merged""quote', '""'),
-    ("merged''quote", "d''"),
+    ("merged''quote", "d''q"),
+    ("old sentence.'' New", ".''"),
     ])
 def test_duplicate_punctuation(line, sequence):
     """Duplicate punctuation marks."""

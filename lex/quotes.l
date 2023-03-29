@@ -6,6 +6,7 @@
 
 static void open_qs();
 static void close_qs();
+static void open_with_apostrophe();
 %}
 
 OPEN            [(\[{<]
@@ -20,6 +21,9 @@ CONTRACTION     em|gainst|tis|twas|twere|twould
 ^{QS}           open_qs();
 -?{QS}{POSTQUOTE} close_qs();
 {QS}$           close_qs();
+
+^''             |
+{PREQUOTE}''    open_with_apostrophe();
 
 [^ "\n]'        close_qs();
 (?i:[ ]?'{CONTRACTION}) close_qs();
@@ -53,5 +57,17 @@ static void close_qs() {
                 printf("%c", yytext[i]);
                 break;
         }
+    }
+}
+
+static void open_with_apostrophe() {
+    if (yyleng == 2) {
+        printf("‘’");
+    }
+    else if (yyleng == 3) {
+        printf("%c‘’", yytext[0]);
+    }
+    else {
+        ECHO;
     }
 }
