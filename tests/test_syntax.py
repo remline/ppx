@@ -97,6 +97,8 @@ def test_ellipsis(line, sequence):
 @pytest.mark.parametrize('line, sequence', [
     ('two-em dash-----too long', '-----'),
     ('em dash---too long', '---'),
+    ('em dash—-hyphen', '—-'),
+    ('hyphen-—em dash', '-—'),
     ])
 def test_dashes(line, sequence):
     """Dash errors."""
@@ -202,6 +204,7 @@ def test_line_counter():
     '<b>bold</b>',
     'two-em dash----',
     'em dash--',
+    'em dash—',
     '-----File: 064.png-------------------',
     'A “quote”.',
     'A ‘quote’.',
