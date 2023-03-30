@@ -29,19 +29,27 @@ def get_output(line):
     ('Multiple "words" "quoted" "here"', 'Multiple “words” “quoted” “here”'),
     ("Multiple 'words' 'quoted' 'here'", 'Multiple ‘words’ ‘quoted’ ‘here’'),
     ('("Hmm...")', '(“Hmm...”)'),
-    ('''Say "'American'".''', 'Say “‘American’”.'),
-    ('''Say '"British"'.''', 'Say ‘“British”’.'),
-    ('''"'American'"''', '“‘American’”'),
-    ('''\'"British"\'''', '‘“British”’'),
-    ('''Isn't James' car''', 'Isn’t James’ car'),
-    ('''It's the 'best' we can 'do\'''', 'It’s the ‘best’ we can ‘do’'),
-    ('''the "'best' we can 'do'", he said.''', 'the “‘best’ we can ‘do’”, he said.'),
+    ("Isn't James' car", 'Isn’t James’ car'),
+    ("It's 'okay' and 'fine'", 'It’s ‘okay’ and ‘fine’'),
     ("''Ere, young gen'l'men.'", '‘’Ere, young gen’l’men.’'),
     ("He said: ''Ere, young gen'l'men.'", 'He said: ‘’Ere, young gen’l’men.’'),
     ("'That's James'', he said", '‘That’s James’’, he said'),
     ])
 def test_quote_conversion(line, curly):
     """Curly quote conversion."""
+    assert get_output(line) == curly
+
+@pytest.mark.parametrize('line, curly', [
+    ('''Say "'American'".''', 'Say “‘American’”.'),
+    ('''Say '"British"'.''', 'Say ‘“British”’.'),
+    ('''"'American'"''', '“‘American’”'),
+    ("""'"British"'""", '‘“British”’'),
+    ('''said "'we' are 'okay'"?''', 'said “‘we’ are ‘okay’”?'),
+    ('''"I'm fine."''', '“I’m fine.”'),
+    ('''said "I'm fine."''', 'said “I’m fine.”'),
+    ])
+def test_combinations(line, curly):
+    """Combinations of single and double quotes."""
     assert get_output(line) == curly
 
 @pytest.mark.parametrize('line', [
@@ -74,7 +82,6 @@ def test_unicode(line, curly):
     ('yes:" and', 'yes:” and'),
     ('["noted"]', '[“noted”]'),
     ('well "[as if]" it', 'well “[as if]” it'),
-    ('doors--"The Holy Doors"--that', 'doors--“The Holy Doors”--that'),
     ('sentence." Then,', 'sentence.” Then,'),
     ('word". Although', 'word”. Although'),
     ('continue," he said.', 'continue,” he said.'),
@@ -88,20 +95,47 @@ def test_unicode(line, curly):
     ("yes:' and", 'yes:’ and'),
     ("['noted']", '[‘noted’]'),
     ("well '[as if]' it", 'well ‘[as if]’ it'),
-    ("doors--'The Holy Doors'--that", 'doors--‘The Holy Doors’--that'),
     ("sentence.' Then,", 'sentence.’ Then,'),
     ("word'. Although", 'word’. Although'),
     ("continue,' he said.", 'continue,’ he said.'),
     ("yes', indeed", 'yes’, indeed'),
-    ('"well I--" ...', '“well I--” ...'),
-    ("'well I--' ...", '‘well I--’ ...'),
-    ('"a little"--these are his own words--"about', '“a little”--these are his own words--“about'),
-    ('"<i>And ... away.</i>"--Source.', '“<i>And ... away.</i>”--Source.'),
-    ('"What reforms?"--what unprecedented...', '“What reforms?”--what unprecedented...'),
-    ('the apse--"<i>Nunc rutilat ...</i>"', 'the apse--“<i>Nunc rutilat ...</i>”'),
     ])
 def test_punctuation(line, curly):
     """Quotation marks next to punctuation."""
+    assert get_output(line) == curly
+
+@pytest.mark.parametrize('line, curly', [
+    ('doors--"The Holy Doors"--that', 'doors--“The Holy Doors”--that'),
+    ("doors--'The Holy Doors'--that", 'doors--‘The Holy Doors’--that'),
+    ('"well I--"', '“well I--”'),
+    ("'well I--'", '‘well I--’'),
+    ('"well I--" ...', '“well I--” ...'),
+    ("'well I--' ...", '‘well I--’ ...'),
+    ('"But"--she looked--"I am!"', '“But”--she looked--“I am!”'),
+    ("'But'--she looked--'I am!'", '‘But’--she looked--‘I am!’'),
+    ('"<i>And ... away.</i>"--Source.', '“<i>And ... away.</i>”--Source.'),
+    ('"What reforms?"--what unprecedented', '“What reforms?”--what unprecedented'),
+    ('the apse--"<i>Nunc rutilat ...</i>"', 'the apse--“<i>Nunc rutilat ...</i>”'),
+    ])
+def test_em_dashes_ascii(line, curly):
+    """Quotation marks next to ASCII em dashes."""
+    assert get_output(line) == curly
+
+@pytest.mark.parametrize('line, curly', [
+    ('doors—"The Holy Doors"—that', 'doors—“The Holy Doors”—that'),
+    ("doors—'The Holy Doors'—that", 'doors—‘The Holy Doors’—that'),
+    ('"well I—"', '“well I—”'),
+    ("'well I—'", '‘well I—’'),
+    ('"well I—" ...', '“well I—” ...'),
+    ("'well I—' ...", '‘well I—’ ...'),
+    ('"But"—she looked—"I am!"', '“But”—she looked—“I am!”'),
+    ("'But'—she looked—'I am!'", '‘But’—she looked—‘I am!’'),
+    ('"<i>And ... away.</i>"—Source.', '“<i>And ... away.</i>”—Source.'),
+    ('"What reforms?"—what unprecedented', '“What reforms?”—what unprecedented'),
+    ('the apse—"<i>Nunc rutilat ...</i>"', 'the apse—“<i>Nunc rutilat ...</i>”'),
+    ])
+def test_em_dashes_unicode(line, curly):
+    """Quotation marks next to Unicode em dashes."""
     assert get_output(line) == curly
 
 @pytest.mark.parametrize('line, curly', [
@@ -111,4 +145,16 @@ def test_punctuation(line, curly):
     ])
 def test_contractions(line, curly):
     """Contractions should yield apostrophes."""
+    assert get_output(line) == curly
+
+@pytest.mark.parametrize('line, curly', [
+    ("“'abc'” or “'xyz'”", '“‘abc’” or “‘xyz’”'),
+    ('"‘abc’" or "‘xyz’"', '“‘abc’” or “‘xyz’”'),
+    ("'“abc”' or '“xyz”'", '‘“abc”’ or ‘“xyz”’'),
+    ('‘"abc"’ or ‘"xyz"’', '‘“abc”’ or ‘“xyz”’'),
+    ])
+def test_partials(line, curly):
+    """The input has been partially manually converted to curly quotes.
+    Ensure the remaining straight quotes are converted.
+    """
     assert get_output(line) == curly

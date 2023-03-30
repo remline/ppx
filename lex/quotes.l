@@ -9,26 +9,29 @@ static void close_qs();
 static void open_with_apostrophe();
 %}
 
+EMDASH          —
 OPEN            [(\[{<]
 CLOS            [)\]}>]
-PREQUOTE        {OPEN}|[ \-]
-POSTQUOTE       {CLOS}|[ \-.,!?;:]
-QS              '|\"|'\"|\"'
+PREQUOTE        {OPEN}|[ \-]|{EMDASH}|“
+POSTQUOTE       {CLOS}|[ \-.,!?;:]|{EMDASH}|’
+QUOTE           ['"]|'\"|\"'
+NON_QUOTE       [^'"\n]
 CONTRACTION     em|gainst|tis|twas|twere|twould
 
 %%
-{PREQUOTE}{QS}  open_qs();
-^{QS}           open_qs();
--?{QS}{POSTQUOTE} close_qs();
-{QS}$           close_qs();
+\"                      |
+{PREQUOTE}{QUOTE}[^ ]   |
+^{QUOTE}                open_qs();
 
-^''             |
-{PREQUOTE}''    open_with_apostrophe();
+'                       |
+{QUOTE}{POSTQUOTE}      close_qs();
+{NON_QUOTE}*{QUOTE}$    close_qs();
 
-[^ "\n]'        close_qs();
+^''                     |
+{PREQUOTE}''[^ ]        open_with_apostrophe();
+
+[^ "\n]'                |
 (?i:[ ]?'{CONTRACTION}) close_qs();
-'               open_qs();
-\"              open_qs();
 %%
 
 int main() {
@@ -61,13 +64,18 @@ static void close_qs() {
 }
 
 static void open_with_apostrophe() {
-    if (yyleng == 2) {
-        printf("‘’");
-    }
-    else if (yyleng == 3) {
-        printf("%c‘’", yytext[0]);
-    }
-    else {
-        ECHO;
+    static char const * const chars[] = {"‘", "’"};
+    int c = 0;
+
+    for (int i = 0; i < yyleng; i++) {
+        switch (yytext[i]) {
+            case '\'':
+                printf(chars[c]);
+                c = (c + 1) % 2;
+                break;
+            default:
+                printf("%c", yytext[i]);
+                break;
+        }
     }
 }
