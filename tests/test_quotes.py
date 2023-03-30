@@ -116,6 +116,8 @@ def test_punctuation(line, curly):
     ('"<i>And ... away.</i>"--Source.', '“<i>And ... away.</i>”--Source.'),
     ('"What reforms?"--what unprecedented', '“What reforms?”--what unprecedented'),
     ('the apse--"<i>Nunc rutilat ...</i>"', 'the apse--“<i>Nunc rutilat ...</i>”'),
+    ('''"Ky's so--"--she paused--"tired."''', '“Ky’s so--”--she paused--“tired.”'),
+    ("""'Was too--'--she paused--'tired.'""", '‘Was too--’--she paused--‘tired.’'),
     ])
 def test_em_dashes_ascii(line, curly):
     """Quotation marks next to ASCII em dashes."""
@@ -133,6 +135,8 @@ def test_em_dashes_ascii(line, curly):
     ('"<i>And ... away.</i>"—Source.', '“<i>And ... away.</i>”—Source.'),
     ('"What reforms?"—what unprecedented', '“What reforms?”—what unprecedented'),
     ('the apse—"<i>Nunc rutilat ...</i>"', 'the apse—“<i>Nunc rutilat ...</i>”'),
+    ('''"Ky's so—"—she paused—"tired."''', '“Ky’s so—”—she paused—“tired.”'),
+    ("""'Was too—'—she paused—'tired.'""", '‘Was too—’—she paused—‘tired.’'),
     ])
 def test_em_dashes_unicode(line, curly):
     """Quotation marks next to Unicode em dashes."""
