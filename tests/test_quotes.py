@@ -119,27 +119,14 @@ def test_punctuation(line, curly):
     ('''"Ky's so--"--she paused--"tired."''', '“Ky’s so--”--she paused--“tired.”'),
     ("""'Was too--'--she paused--'tired.'""", '‘Was too--’--she paused--‘tired.’'),
     ])
-def test_em_dashes_ascii(line, curly):
-    """Quotation marks next to ASCII em dashes."""
+def test_em_dashes(line, curly):
+    """Quotation marks next to em dashes."""
+    # Test ASCII em dashes
     assert get_output(line) == curly
 
-@pytest.mark.parametrize('line, curly', [
-    ('doors—"The Holy Doors"—that', 'doors—“The Holy Doors”—that'),
-    ("doors—'The Holy Doors'—that", 'doors—‘The Holy Doors’—that'),
-    ('"well I—"', '“well I—”'),
-    ("'well I—'", '‘well I—’'),
-    ('"well I—" ...', '“well I—” ...'),
-    ("'well I—' ...", '‘well I—’ ...'),
-    ('"But"—she looked—"I am!"', '“But”—she looked—“I am!”'),
-    ("'But'—she looked—'I am!'", '‘But’—she looked—‘I am!’'),
-    ('"<i>And ... away.</i>"—Source.', '“<i>And ... away.</i>”—Source.'),
-    ('"What reforms?"—what unprecedented', '“What reforms?”—what unprecedented'),
-    ('the apse—"<i>Nunc rutilat ...</i>"', 'the apse—“<i>Nunc rutilat ...</i>”'),
-    ('''"Ky's so—"—she paused—"tired."''', '“Ky’s so—”—she paused—“tired.”'),
-    ("""'Was too—'—she paused—'tired.'""", '‘Was too—’—she paused—‘tired.’'),
-    ])
-def test_em_dashes_unicode(line, curly):
-    """Quotation marks next to Unicode em dashes."""
+    # Test Unicode em dashes
+    line = line.replace('--','—')
+    curly = curly.replace('--','—')
     assert get_output(line) == curly
 
 @pytest.mark.parametrize('line, curly', [
