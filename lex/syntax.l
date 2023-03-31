@@ -12,30 +12,53 @@ static void error_str(const char * s);
 OPEN            [(\[{<]
 CLOS            [)\]}>]
 
+A               [[:alpha:]]
+AN              [[:alnum:]]
+ANP             {AN}|{P}
+D               [[:digit:]]
+P               [.,!?;:]
+
+EM_DASH         --|—
+QUOTE           ['"]|“|”|‘|’
+ROMAN_NUM       [IVXLCDM]
+
 %%
+M'
+M‘
+{ROMAN_NUM}".'s"
+{ROMAN_NUM}".’s"
+{QUOTE}{EM_DASH}
+{EM_DASH}{QUOTE}
+
 " \" "              |
 ^"\" "              |
 " ' "               |
 ^"' "               |
 ^"”"                |
 ^"’ "               |
-[[:alnum:]]\"[[:alnum:]] |
-[[:alnum:]]''[[:alnum:]] |
+{ANP}\"{AN}         |
+{AN}''{AN}          |
+{P}'{AN}            |
+{P}’{AN}            |
 " '' "              |
 [[:punct:]]''       |
-[[:alnum:]]‘        |
-[[:alnum:]]“        |
-”[[:alnum:]]        |
+{ANP}‘              |
+{ANP}“              |
+‘{P}                |
+“{P}                |
+”{AN}               |
 "“ "                |
 "‘ "                |
 " ”"                |
 " ."                |
 " ,"                |
 [ ][!?;:]           |
-[!?;:][[:alpha:]]   |
-,[[:alpha:]]        |
+[!?;:]{A}           |
+,{A}                |
 "....."             |
+". ..."             |
 [ ]?\"\"            |
+{A}{D}{A}           |
 ".."                |
 ",,"                |
 ";;"                |
@@ -49,8 +72,10 @@ CLOS            [)\]}>]
 "---"               |
 "—-"                |
 "-—"                |
+-{QUOTE}            |
+{QUOTE}-            |
 " ...."             |
-"...."[[:alnum:]]   |
+"...."{AN}          |
 "  ..."             |
 "...  "             |
 "....  "            error();

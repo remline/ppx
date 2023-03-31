@@ -89,6 +89,7 @@ def test_duplicate_punctuation(line, sequence):
     ('...  two extra space', '...  '),
     ('....  two extra space', '....  '),
     ('Sentence....Sentence', '....S'),
+    ('Sentence. ... Sentence', '. ...'),
     ])
 def test_ellipsis(line, sequence):
     """Ellipsis errors."""
@@ -105,6 +106,20 @@ def test_dashes(line, sequence):
     assert get_output(line) == build_sequence_error(sequence)
 
 @pytest.mark.parametrize('line, sequence', [
+    ('"well-" he paused', '-"'),
+    ("'well-' he paused", "-'"),
+    ('resumed, "-aha!"', '"-'),
+    ("resumed, '-aha!'", "'-"),
+    ('“well-” he paused', '-”'),
+    ('‘well-’ he paused', '-’'),
+    ('resumed, “-aha!”', '“-'),
+    ('resumed, ‘-aha!’', '‘-'),
+    ])
+def test_hyphens(line, sequence):
+    """These hyphens should be em dashes."""
+    assert get_output(line) == build_sequence_error(sequence)
+
+@pytest.mark.parametrize('line, sequence', [
     ('quote " word', ' " '),
     ("quote ' word", " ' "),
     ('quote"word', 'e"w'),
@@ -112,6 +127,12 @@ def test_dashes(line, sequence):
     ("' start of line", "' "),
     ('end of line "', ' "'),
     ("end of line '", " '"),
+    ("'yes',he said", ",h"),
+    ("'yes,'he said", ",'h"),
+    ("'yes!'he said", "!'h"),
+    ('"yes",he said', ',h'),
+    ('"yes,"he said', ',"h'),
+    ('"yes!"he said', '!"h'),
     ])
 def test_quote_problems(line, sequence):
     """Quotation marks in the wrong place."""
@@ -130,6 +151,12 @@ def test_quote_problems(line, sequence):
     ('line end ‘', ' ‘'),
     ('” line start', '”'),
     ('’ line start', '’ '),
+    ('‘yes,’he said', ',’h'),
+    ('‘yes!’he said', '!’h'),
+    ('word.“New', '.“'),
+    ('word,‘New', ',‘'),
+    ('“:word', '“:'),
+    ('‘?word', '‘?'),
     ])
 def test_curly_quote_problems(line, sequence):
     """Curly quotes in the wrong place."""
@@ -142,6 +169,13 @@ def test_curly_quote_problems(line, sequence):
     ])
 def test_proofing_marks(line, sequence):
     """Problems with PGDP proofreading syntax."""
+    assert get_output(line) == build_sequence_error(sequence)
+
+@pytest.mark.parametrize('line, sequence', [
+    ('number between alpha a8b', 'a8b'),
+    ])
+def test_numbers(line, sequence):
+    """Numbers in the wrong place."""
     assert get_output(line) == build_sequence_error(sequence)
 
 @pytest.mark.parametrize('line, message', [
@@ -210,6 +244,10 @@ def test_line_counter():
     'A ‘quote’.',
     'Abbreviate ’em',
     '’twas at start of line',
+    "turned comma, e.g., M'Donough",
+    'turned comma, e.g., M‘Donough',
+    "Edward I.'s son",
+    'Edward I.’s son',
     ])
 def test_valid(line):
     """Valid syntax which should generate no error."""
