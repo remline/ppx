@@ -133,6 +133,7 @@ def test_footnotes(line, curly):
     ('the apse--"<i>Nunc rutilat ...</i>"', 'the apse--“<i>Nunc rutilat ...</i>”'),
     ('''"Ky's so--"--she paused--"tired."''', '“Ky’s so--”--she paused--“tired.”'),
     ("""'Was too--'--she paused--'tired.'""", '‘Was too--’--she paused--‘tired.’'),
+    ('''"Is: 'medicus quisquam--'"''', '“Is: ‘medicus quisquam--’”'),
     ("no matter--'tis but resting", 'no matter--’tis but resting'),
     ])
 def test_em_dashes(line, curly):

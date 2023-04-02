@@ -22,23 +22,21 @@ static void open_with_apostrophe();
 
 EM_DASH         --|—
 LBRACKET        [(\[{]
-
 TAG_CHARS       [[:alnum:] ]
 OPEN_TAG        <{TAG_CHARS}+>
-PRE_OPEN        {LBRACKET}|[ ]|{EM_DASH}|{OPEN_TAG}|“|‘
-POST_OPEN       [[:^space:]]
 
+PRE_OPEN        {LBRACKET}|[ ]|{EM_DASH}|{OPEN_TAG}|“|‘
+POST_OPEN       [^[:space:]'"]
 QUOTE           ['"]
 
 CONTRACTION     '(em|im|gainst|tis|twas|twere|twould)[[:^alnum:]]
-PREC            ([ ]|{QUOTE}|{EM_DASH})?
 
 %%
-{PRE_OPEN}{QUOTE}{POST_OPEN}    |
-^{QUOTE}{POST_OPEN}             open_qs();
-
 {PRE_OPEN}''{POST_OPEN}         |
 ^''{POST_OPEN}                  open_with_apostrophe();
+
+{PRE_OPEN}{QUOTE}+{POST_OPEN}   |
+^{QUOTE}+{POST_OPEN}            open_qs();
 
 {QUOTE}                         close_qs();
 
