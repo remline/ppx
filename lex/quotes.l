@@ -2,6 +2,15 @@
 %option outfile="quotes.c"
 
 %{
+/*
+Convert straight quotes (" and ') to curly quotes (“” and ‘’).
+
+The basic idea is to detect all conditions for opening quotation marks (“ and ‘).
+All remaining quotation marks are assumed to be closing (” and ’).
+*/
+
+#include <stdbool.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -11,55 +20,72 @@ static void open_ambiguous();
 static void open_with_apostrophe();
 %}
 
-EMDASH          —
-OPEN            [(\[{<]
-CLOS            [)\]}>]
-PREQUOTE        {OPEN}|[ \-]|{EMDASH}|“
-POSTQUOTE       {CLOS}|[ \-.,!?;:]|{EMDASH}|’
-QUOTE           ['"]|'\"|\"'
-NON_QUOTE       [^'"\n]
-CONTRACTION     em|gainst|tis|twas|twere|twould
+EM_DASH         --|—
+LBRACKET        [(\[{]
+
+TAG_CHARS       [[:alnum:] ]
+OPEN_TAG        <{TAG_CHARS}+>
+PRE_OPEN        {LBRACKET}|[ ]|{EM_DASH}|{OPEN_TAG}|“|‘
+POST_OPEN       [[:^space:]]
+
+QUOTE           ['"]
+
+CONTRACTION     '(em|im|gainst|tis|twas|twere|twould)[[:^alnum:]]
+PREC            ([ ]|{QUOTE}|{EM_DASH})?
 
 %%
-\"                      |
-{PREQUOTE}{QUOTE}[^ ]   |
-^{QUOTE}                open_qs();
+{PRE_OPEN}{QUOTE}{POST_OPEN}    |
+^{QUOTE}{POST_OPEN}             open_qs();
 
-'                       |
-{QUOTE}{POSTQUOTE}      close_qs();
-{NON_QUOTE}*{QUOTE}$    close_qs();
+{PRE_OPEN}''{POST_OPEN}         |
+^''{POST_OPEN}                  open_with_apostrophe();
 
-^''                     |
-{PREQUOTE}''[^ ]        open_with_apostrophe();
+{QUOTE}                         close_qs();
 
-[^ "\n]'                |
-(?i:[ ]?'{CONTRACTION}) close_qs();
+(?i:{PRE_OPEN}?{CONTRACTION})   close_qs();
+(?i:["]{CONTRACTION})           open_with_apostrophe();
 
-{EMDASH}['"]{EMDASH}    |
---['"]--                open_ambiguous();
+{EM_DASH}{QUOTE}{EM_DASH}       open_ambiguous();
 %%
 
-enum {
-    LEFT,
-    RIGHT
-};
+typedef enum {
+    OPEN_SINGLE,
+    CLOSE_SINGLE,
+    OPEN_DOUBLE,
+    CLOSE_DOUBLE
+} quote_type;
 
-static int prev_single;
-static int prev_double;
+typedef enum {
+    CLOSE,
+    OPEN
+} side_type;
+
+static side_type prev_single;
+static side_type prev_double;
 
 int main() {
     yylex();
     return 0;
 }
 
+/* Print the given quotation mark */
+static void printq(quote_type q) {
+    switch (q) {
+        case OPEN_SINGLE:  printf("‘"); prev_single = OPEN;  break;
+        case CLOSE_SINGLE: printf("’"); prev_single = CLOSE; break;
+        case OPEN_DOUBLE:  printf("“"); prev_double = OPEN;  break;
+        case CLOSE_DOUBLE: printf("”"); prev_double = CLOSE; break;
+    }
+}
+
 /* Print the match with straight quotes converted to opening curly quotes */
 static void open_qs() {
     for (int i = 0; i < yyleng; i++) {
         switch (yytext[i]) {
-            case '"':  printf("“"); prev_double = LEFT; break;
-            case '\'': printf("‘"); prev_single = LEFT; break;
+            case '"':  printq(OPEN_DOUBLE); break;
+            case '\'': printq(OPEN_SINGLE); break;
             default:
-                printf("%c", yytext[i]);
+                putchar(yytext[i]);
                 break;
         }
     }
@@ -69,10 +95,10 @@ static void open_qs() {
 static void close_qs() {
     for (int i = 0; i < yyleng; i++) {
         switch (yytext[i]) {
-            case '"':  printf("”"); prev_double = RIGHT; break;
-            case '\'': printf("’"); prev_single = RIGHT; break;
+            case '"':  printq(CLOSE_DOUBLE); break;
+            case '\'': printq(CLOSE_SINGLE); break;
             default:
-                printf("%c", yytext[i]);
+                putchar(yytext[i]);
                 break;
         }
     }
@@ -81,34 +107,34 @@ static void close_qs() {
 /* Decide which quote to use in ambiguous cases such as: --"--. */
 /* To decide, use our memory of the previously selected quote type. */
 static void open_ambiguous() {
-    int prev;
+    side_type prev;
 
-    if (memchr(yytext, '"', yyleng)) {
-        prev = prev_double;
-    } else {
-        prev = prev_single;
-    }
+    prev = memchr(yytext, '"', yyleng) ? prev_double : prev_single;
 
-    if (prev == LEFT) {
+    if (prev == OPEN) {
         close_qs();
     } else {
         open_qs();
     }
 }
 
-/* Print the match with an opening single quote and an apostrophe */
+/* Print the match, treating the first quotation mark as an open */
+/* and all remaining quotation marks as closes. */
 static void open_with_apostrophe() {
-    static char const * const chars[] = {"‘", "’"};
-    int c = 0;
+    bool found = false;
 
     for (int i = 0; i < yyleng; i++) {
         switch (yytext[i]) {
+            case '"':
+                printq(found ? CLOSE_DOUBLE : OPEN_DOUBLE);
+                found = true;
+                break;
             case '\'':
-                printf(chars[c]);
-                c = (c + 1) % 2;
+                printq(found ? CLOSE_SINGLE : OPEN_SINGLE);
+                found = true;
                 break;
             default:
-                printf("%c", yytext[i]);
+                putchar(yytext[i]);
                 break;
         }
     }
