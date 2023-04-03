@@ -8,21 +8,32 @@ def check_syntax(line):
     """Get the syntax checker's output for the given input line.
     Verify that the checker reports no error.
     """
+    line = f'{line}\n'
     result = subprocess.run('lex/syntax', input=line, encoding='utf-8',
                             stdout=subprocess.PIPE, check=False)
     assert result.stdout == ''
 
-def get_output(line, *, verify_syntax = True):
+def get_output(line):
     """Get standard output for the given input line."""
-    # All tests are designed to work on a complete line
-    line += '\n'
+    line = f'{line}\n'
     result = subprocess.run('lex/quotes', input=line, encoding='utf-8',
                             stdout=subprocess.PIPE, check=False)
-
-    if verify_syntax:
-        check_syntax(line)
-
     return result.stdout.rstrip('\n')
+
+def verify(line, expect, *, verify_syntax = True):
+    """Verify that the input line converts to the expected output."""
+    # The output should match as a complete line
+    assert get_output(line) == expect
+
+    # The output should match as part of a line, so surround with spaces
+    assert get_output(f' {line} ') == f' {expect} '
+
+    # The output should match when surrounded by tags
+    # assert get_output(f'<b>{line}</b>') == f'<b>{expect}</b>'
+
+    # The syntax checker should be happy, too
+    if verify_syntax:
+        check_syntax(f'{line}')
 
 @pytest.mark.parametrize('line, curly', [
     ('"Quote at start', '“Quote at start'),
@@ -42,7 +53,7 @@ def get_output(line, *, verify_syntax = True):
     ])
 def test_quote_conversion(line, curly):
     """Curly quote conversion."""
-    assert get_output(line) == curly
+    verify(line, curly)
 
 @pytest.mark.parametrize('line, curly', [
     ('''Say "'American'".''', 'Say “‘American’”.'),
@@ -56,7 +67,7 @@ def test_quote_conversion(line, curly):
     ])
 def test_combinations(line, curly):
     """Combinations of single and double quotes."""
-    assert get_output(line) == curly
+    verify(line, curly)
 
 @pytest.mark.parametrize('line', [
     '“word”',
@@ -66,7 +77,7 @@ def test_combinations(line, curly):
     ])
 def test_curly_input(line):
     """Input curly quotes should be passed through unmodified."""
-    assert get_output(line) == line
+    verify(line, line)
 
 @pytest.mark.parametrize('line, curly', [
     ("θπ'ς", 'θπ’ς'),
@@ -75,7 +86,7 @@ def test_curly_input(line):
     ])
 def test_unicode(line, curly):
     """Unicode input."""
-    assert get_output(line) == curly
+    verify(line, curly)
 
 @pytest.mark.parametrize('line, curly', [
     ('[Illustration: "Lively."]', '[Illustration: “Lively.”]'),
@@ -109,7 +120,7 @@ def test_unicode(line, curly):
     ])
 def test_punctuation(line, curly):
     """Quotation marks next to punctuation."""
-    assert get_output(line) == curly
+    verify(line, curly)
 
 @pytest.mark.parametrize('line, curly', [
     ('footnote."[5]', 'footnote.”[5]'),
@@ -117,7 +128,7 @@ def test_punctuation(line, curly):
     ])
 def test_footnotes(line, curly):
     """Quotation marks next to footnotes."""
-    assert get_output(line) == curly
+    verify(line, curly)
 
 @pytest.mark.parametrize('line, curly', [
     ('doors--"The Holy Doors"--that', 'doors--“The Holy Doors”--that'),
@@ -139,12 +150,12 @@ def test_footnotes(line, curly):
 def test_em_dashes(line, curly):
     """Quotation marks next to em dashes."""
     # Test ASCII em dashes
-    assert get_output(line) == curly
+    verify(line, curly)
 
     # Test Unicode em dashes
     line = line.replace('--','—')
     curly = curly.replace('--','—')
-    assert get_output(line) == curly
+    verify(line, curly)
 
 @pytest.mark.parametrize('line, curly', [
     ("'Em is an apostrophe", '’Em is an apostrophe'),
@@ -156,13 +167,16 @@ def test_em_dashes(line, curly):
     ("“'twould", '“’twould'),
     ("'emit a full word'", '‘emit a full word’'),
     ('''"'Tis that...''', '“’Tis that...'),
+    ('''said, "'Tis that...''', 'said, “’Tis that...'),
     ('''"'twas nothin'--"--he''', '“’twas nothin’--”--he'),
+    ('''"''t''', '“‘’t'),
+    ('''"''im''', '“‘’im'),
     ('''"get 'im"''', '“get ’im”'),
     ('''"'im"''', '“’im”'),
     ])
 def test_contractions(line, curly):
     """Contractions should yield apostrophes."""
-    assert get_output(line) == curly
+    verify(line, curly)
 
 @pytest.mark.parametrize('line, curly', [
     ("“'abc'” or “'xyz'”", '“‘abc’” or “‘xyz’”'),
@@ -174,7 +188,7 @@ def test_partials(line, curly):
     """The input has been partially manually converted to curly quotes.
     Ensure the remaining straight quotes are converted.
     """
-    assert get_output(line) == curly
+    verify(line, curly)
 
 @pytest.mark.parametrize('line, curly', [
     ('a <b>"bold"</b> tag', 'a <b>“bold”</b> tag'),
@@ -186,7 +200,7 @@ def test_partials(line, curly):
     ])
 def test_tags(line, curly):
     """HTML-like tags."""
-    assert get_output(line) == curly
+    verify(line, curly)
 
 @pytest.mark.parametrize('line, curly', [
     ("Monsoons, Nor'-Westers", 'Monsoons, Nor’-Westers'),
@@ -195,4 +209,4 @@ def test_dubious_syntax(line, curly):
     """Patterns with questionable syntax. Even so, we should select
     the correct curly quote.
     """
-    assert get_output(line, verify_syntax = False) == curly
+    verify(line, curly, verify_syntax = False)

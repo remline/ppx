@@ -29,19 +29,20 @@ PRE_OPEN        {LBRACKET}|[ ]|{EM_DASH}|{OPEN_TAG}|“|‘
 POST_OPEN       [^[:space:]'"]
 QUOTE           ['"]
 
-CONTRACTION     '(em|im|gainst|tis|twas|twere|twould)[[:^alnum:]]
+CON_LIST        em|im|gainst|tis|twas|twere|twould
+PRE_CON         {PRE_OPEN}{QUOTE}?
+CON             '(?i:{CON_LIST})
 
 %%
-{PRE_OPEN}''{POST_OPEN}         |
-^''{POST_OPEN}                  open_with_apostrophe();
+{PRE_CON}''{POST_OPEN}          |
+^{QUOTE}?''{POST_OPEN}          open_with_apostrophe();
+{PRE_CON}{CON}/[[:^alnum:]]     open_with_apostrophe();
+^{QUOTE}?{CON}/[[:^alnum:]]     open_with_apostrophe();
 
 {PRE_OPEN}{QUOTE}+{POST_OPEN}   |
 ^{QUOTE}+{POST_OPEN}            open_qs();
 
 {QUOTE}                         close_qs();
-
-(?i:{PRE_OPEN}?{CONTRACTION})   close_qs();
-(?i:["]{CONTRACTION})           open_with_apostrophe();
 
 {EM_DASH}{QUOTE}{EM_DASH}       open_ambiguous();
 %%
@@ -50,7 +51,8 @@ typedef enum {
     OPEN_SINGLE,
     CLOSE_SINGLE,
     OPEN_DOUBLE,
-    CLOSE_DOUBLE
+    CLOSE_DOUBLE,
+    APOSTROPHE,
 } quote_type;
 
 typedef enum {
@@ -73,6 +75,7 @@ static void printq(quote_type q) {
         case CLOSE_SINGLE: printf("’"); prev_single = CLOSE; break;
         case OPEN_DOUBLE:  printf("“"); prev_double = OPEN;  break;
         case CLOSE_DOUBLE: printf("”"); prev_double = CLOSE; break;
+        case APOSTROPHE:   printf("’"); break;
     }
 }
 
@@ -116,24 +119,29 @@ static void open_ambiguous() {
     }
 }
 
-/* Print the match, treating the first quotation mark as an open */
-/* and all remaining quotation marks as closes. */
+/* Print the match, treating the final single quote as an apostrophe */
+/* and all other quotation marks as opens. */
 static void open_with_apostrophe() {
-    bool found = false;
+    int ap_index;
 
+    /* Find the final single quote. If not found, */
+    /* the index will be -1. */
+    for(ap_index = yyleng - 1; ap_index >= 0; ap_index--) {
+        if (yytext[ap_index] == '\'') {
+            break;
+        }
+    }
+
+    /* Convert to open quotes and an apostrophe */
     for (int i = 0; i < yyleng; i++) {
-        switch (yytext[i]) {
-            case '"':
-                printq(found ? CLOSE_DOUBLE : OPEN_DOUBLE);
-                found = true;
-                break;
-            case '\'':
-                printq(found ? CLOSE_SINGLE : OPEN_SINGLE);
-                found = true;
-                break;
-            default:
-                putchar(yytext[i]);
-                break;
+        if (i == ap_index) {
+            printq(APOSTROPHE);
+        } else if(yytext[i] == '"') {
+            printq(OPEN_DOUBLE);
+        } else if(yytext[i] == '\'') {
+            printq(OPEN_SINGLE);
+        } else {
+            putchar(yytext[i]);
         }
     }
 }
