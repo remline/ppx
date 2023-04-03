@@ -26,7 +26,7 @@ TAG_CHARS       [[:alnum:] ]
 OPEN_TAG        <{TAG_CHARS}+>
 
 PRE_OPEN        {LBRACKET}|[ ]|{EM_DASH}|{OPEN_TAG}|“|‘
-POST_OPEN       [^[:space:]'"]
+POST_OPEN       [^[:space:]'")\]}]
 QUOTE           ['"]
 
 CON_LIST        em|im|gainst|tis|twas|twere|twould

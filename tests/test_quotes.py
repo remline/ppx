@@ -28,11 +28,11 @@ def verify(line, expect):
     # The output should match as part of a line, so surround with spaces
     assert get_output(f' {line} ') == f' {expect} '
 
-    # The output should match when surrounded by tags
-    # assert get_output(f'<b>{line}</b>') == f'<b>{expect}</b>'
+    # The output should match when surrounded by parentheses
+    assert get_output(f'({line})') == f'({expect})'
 
     # The syntax checker should be happy, too
-    check_syntax(f'{line}')
+    check_syntax(line)
 
 @pytest.mark.parametrize('line, curly', [
     ('"Quote at start', '“Quote at start'),
@@ -148,6 +148,7 @@ def test_footnotes(line, curly):
     ("""'Was too--'--she paused--'tired.'""", '‘Was too--’--she paused--‘tired.’'),
     ('''"Is: 'medicus quisquam--'"''', '“Is: ‘medicus quisquam--’”'),
     ("no matter--'tis but resting", 'no matter--’tis but resting'),
+    ('["I--"]', '[“I--”]'),
     ])
 def test_em_dashes(line, curly):
     """Quotation marks next to em dashes."""
