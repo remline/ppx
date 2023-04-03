@@ -107,11 +107,13 @@ def test_dashes(line, sequence):
 
 @pytest.mark.parametrize('line, sequence', [
     ('"well-" he paused', '-"'),
-    ("'well-' he paused", "-'"),
+    ("'well-' he paused", "-' "),
+    ("'well-'!", "-'!"),
     ('resumed, "-aha!"', '"-'),
-    ("resumed, '-aha!'", "'-"),
+    ("resumed, '-aha!'", " '-"),
     ('“well-” he paused', '-”'),
-    ('‘well-’ he paused', '-’'),
+    ('‘well-’ he paused', '-’ '),
+    ('‘well-’?', '-’?'),
     ('resumed, “-aha!”', '“-'),
     ('resumed, ‘-aha!’', '‘-'),
     ])

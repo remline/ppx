@@ -20,7 +20,7 @@ def get_output(line):
                             stdout=subprocess.PIPE, check=False)
     return result.stdout.rstrip('\n')
 
-def verify(line, expect, *, verify_syntax = True):
+def verify(line, expect):
     """Verify that the input line converts to the expected output."""
     # The output should match as a complete line
     assert get_output(line) == expect
@@ -32,8 +32,7 @@ def verify(line, expect, *, verify_syntax = True):
     # assert get_output(f'<b>{line}</b>') == f'<b>{expect}</b>'
 
     # The syntax checker should be happy, too
-    if verify_syntax:
-        check_syntax(f'{line}')
+    check_syntax(f'{line}')
 
 @pytest.mark.parametrize('line, curly', [
     ('"Quote at start', '“Quote at start'),
@@ -117,6 +116,9 @@ def test_unicode(line, curly):
     ("word'. Although", 'word’. Although'),
     ("continue,' he said.", 'continue,’ he said.'),
     ("yes', indeed", 'yes’, indeed'),
+    ("Nor'-Westers", 'Nor’-Westers'),
+    ("will-o'-the-wisp", 'will-o’-the-wisp'),
+    ("'but'-ing and 'and'-ing", '‘but’-ing and ‘and’-ing'),
     ])
 def test_punctuation(line, curly):
     """Quotation marks next to punctuation."""
@@ -201,12 +203,3 @@ def test_partials(line, curly):
 def test_tags(line, curly):
     """HTML-like tags."""
     verify(line, curly)
-
-@pytest.mark.parametrize('line, curly', [
-    ("Monsoons, Nor'-Westers", 'Monsoons, Nor’-Westers'),
-    ])
-def test_dubious_syntax(line, curly):
-    """Patterns with questionable syntax. Even so, we should select
-    the correct curly quote.
-    """
-    verify(line, curly, verify_syntax = False)

@@ -20,6 +20,7 @@ P               [.,!?;:]
 
 EM_DASH         --|—
 QUOTE           ['"]|“|”|‘|’
+APOSTROPHE      '|’
 ROMAN_NUM       [IVXLCDM]
 
 %%
@@ -72,8 +73,10 @@ M‘
 "---"               |
 "—-"                |
 "-—"                |
--{QUOTE}            |
-{QUOTE}-            |
+-(["]|“|”|‘)        |
+(["]|“|”|‘)-        |
+-{APOSTROPHE}[[:^alnum:]] |
+[[:^alnum:]]{APOSTROPHE}- |
 " ...."             |
 "...."{AN}          |
 "  ..."             |
