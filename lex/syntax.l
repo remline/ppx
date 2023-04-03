@@ -107,7 +107,6 @@ enum {
     };
 
 static unsigned cnt;
-static char is_error;
 static char stack[STACK_SZ];
 
 int main() {
@@ -115,10 +114,9 @@ yylex();
 
 if (cnt) {
     printf("End of file: Unclosed '%c'\n", stack[cnt-1]);
-    is_error = 1;
     }
 
-return is_error;
+return 0;
 }
 
 static void pop(char c) {
@@ -142,11 +140,9 @@ static void pop(char c) {
 
     if (actual == 0) {
         printf("line %i: Found '%c' without '%c'\n", yylineno, c, pair);
-        is_error = 1;
         }
     else if (actual != pair) {
         printf("line %i: Found '%c' after '%c'\n", yylineno, c, actual);
-        is_error = 1;
         }
 }
 
@@ -172,10 +168,8 @@ static void check_pair(char c) {
 
 static void error() {
     printf("line %i: Bad sequence <%s>\n", yylineno, yytext);
-    is_error = 1;
 }
 
 static void error_str(const char * s) {
     printf("line %i: %s\n", yylineno, s);
-    is_error = 1;
 }
