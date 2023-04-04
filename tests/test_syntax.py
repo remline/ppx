@@ -262,6 +262,7 @@ def test_line_counter():
     '*** START OF THE PROJECT GUTENBERG EBOOK\n ***',
     '*** END OF THIS PROJECT GUTENBERG EBOOK ***',
     'the absinthe.',
+    'is .25 cm',
     ])
 def test_valid(line):
     """Valid syntax which should generate no error."""
