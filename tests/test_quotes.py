@@ -164,6 +164,10 @@ def test_em_dashes(line, curly):
 @pytest.mark.parametrize('line, curly', [
     ("'Em is an apostrophe", '’Em is an apostrophe'),
     ("'Em 'gainst 'tis 'twas 'TWERE 'twould", '’Em ’gainst ’tis ’twas ’TWERE ’twould'),
+    ("'tisn't 'twasn't 'tweren't 'twouldn't", '’tisn’t ’twasn’t ’tweren’t ’twouldn’t'),
+    ("'twon't", '’twon’t'),
+    ("'undred 'undreds 'undredth", '’undred ’undreds ’undredth'),
+    ("'ead 'Eads 'Eadbald 'er 'ers", '’ead ’Eads ‘Eadbald ’er ‘ers'),
     ("said, ‘'Em was rough'’", 'said, ‘’Em was rough’’'),
     ("<sc>'gainst", '<sc>’gainst'),
     ("--'twas", '--’twas'),

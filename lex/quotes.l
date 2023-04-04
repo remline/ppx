@@ -29,13 +29,18 @@ PRE_OPEN        {LBRACKET}|[ ]|{EM_DASH}|{OPEN_TAG}|“|‘
 POST_OPEN       [^[:space:]'")\]}]
 QUOTE           ['"]
 
-CON_LIST        em|im|gainst|tis|twas|twere|twould
 PRE_CON         {PRE_OPEN}{QUOTE}?
-CON             '(?i:{CON_LIST})
+CONS            em|gainst|ud
+CONS_H          (ead)s?|ard|eavy|elp|er|im
+CONS_IT         (tis|twas|twere|twould)n?|twon
+CON             '(?i:{CONS}|{CONS_H}|{CONS_IT})
+CON_PREFIX      '(?i:undred)
 
 %%
 {PRE_CON}''{POST_OPEN}          |
-^{QUOTE}?''{POST_OPEN}          open_with_apostrophe();
+^{QUOTE}?''{POST_OPEN}          |
+{PRE_CON}{CON_PREFIX}           |
+^{QUOTE}?{CON_PREFIX}           open_with_apostrophe();
 {PRE_CON}{CON}/[[:^alnum:]]     open_with_apostrophe();
 ^{QUOTE}?{CON}/[[:^alnum:]]     open_with_apostrophe();
 
