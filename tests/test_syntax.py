@@ -85,7 +85,6 @@ def test_duplicate_punctuation(line, sequence):
 @pytest.mark.parametrize('line, sequence', [
     ('Five..... periods', '.....'),
     ('One extra space ....', ' ....'),
-    ('Two extra space  ...', '  ...'),
     ('...  two extra space', '...  '),
     ('....  two extra space', '....  '),
     ('Sentence....Sentence', '....S'),
@@ -180,6 +179,14 @@ def test_numbers(line, sequence):
     """Numbers in the wrong place."""
     assert get_output(line) == build_sequence_error(sequence)
 
+@pytest.mark.parametrize('line, sequence', [
+    ('The, great', 'The,'),
+    ('in an. old', ' an.'),
+    ])
+def test_articles(line, sequence):
+    """Punctuation after an article."""
+    assert get_output(line) == build_sequence_error(sequence)
+
 @pytest.mark.parametrize('line, message', [
     (')', "Found ')' without '('"),
     ('([)', "Found ')' after '['"),
@@ -250,6 +257,11 @@ def test_line_counter():
     'turned comma, e.g., M‘Donough',
     "Edward I.'s son",
     'Edward I.’s son',
+    'wrote, “... has ...”',
+    '*** START OF THE PROJECT GUTENBERG EBOOK ***',
+    '*** START OF THE PROJECT GUTENBERG EBOOK\n ***',
+    '*** END OF THIS PROJECT GUTENBERG EBOOK ***',
+    'the absinthe.',
     ])
 def test_valid(line):
     """Valid syntax which should generate no error."""

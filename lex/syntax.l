@@ -19,40 +19,38 @@ D               [[:digit:]]
 P               [.,!?;:]
 
 EM_DASH         --|—
-QUOTE           ['"]|“|”|‘|’
+LQUOTE          “|‘
+RQUOTE          ”|’
+QUOTE           ["']|{LQUOTE}|{RQUOTE}
 APOSTROPHE      '|’
 ROMAN_NUM       [IVXLCDM]
+ARTICLE         (?i:the|an)
 
 %%
 M'
 M‘
-{ROMAN_NUM}".'s"
-{ROMAN_NUM}".’s"
+{ROMAN_NUM}[.]{APOSTROPHE}s
 {QUOTE}{EM_DASH}
 {EM_DASH}{QUOTE}
+{LQUOTE}"..."
+"*** "(START|END).*\n?.*"***"
 
-" \" "              |
-^"\" "              |
-" ' "               |
-^"' "               |
-^"”"                |
-^"’ "               |
+[ ]["'][ ]          |
+^["'][ ]            |
+^”                  |
+^’[ ]               |
 {ANP}\"{AN}         |
 {AN}''{AN}          |
-{P}'{AN}            |
-{P}’{AN}            |
+{P}{APOSTROPHE}{AN} |
 " '' "              |
 {P}''               |
-{ANP}‘              |
-{ANP}“              |
-‘{P}                |
-“{P}                |
+{ANP}{LQUOTE}       |
+{LQUOTE}{P}         |
 ”{AN}               |
-"“ "                |
-"‘ "                |
+{LQUOTE}[ ]         |
 " ”"                |
-" ."                |
-" ,"                |
+" ."{1,}            |
+" ,"{1,}            |
 [ ][!?;:]           |
 [!?;:]{A}           |
 ,{A}                |
@@ -69,8 +67,8 @@ M‘
 "””"                |
 "**"                |
 "-*"                |
-"-----"             |
-"---"               |
+-{5,}               |
+-{3}                |
 "—-"                |
 "-—"                |
 -(["]|“|”|‘)        |
@@ -79,15 +77,12 @@ M‘
 [[:^alnum:]]{APOSTROPHE}- |
 " ...."             |
 "...."{AN}          |
-"  ..."             |
 "...  "             |
-"....  "            error();
-" \""$              error();
-" '"$               error();
+"....  "            |
+[[:^alnum:]]{ARTICLE}{P} |
+^{ARTICLE}{P}       error();
 "''"$               error();
-" ’"$               error();
-" “"$               error();
-" ‘"$               error();
+[ ]{QUOTE}$         error();
 
 [ ]$                error_str("Trailing space");
 
