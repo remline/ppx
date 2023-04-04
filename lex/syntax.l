@@ -23,15 +23,12 @@ LQUOTE          “|‘
 RQUOTE          ”|’
 QUOTE           ["']|{LQUOTE}|{RQUOTE}
 APOSTROPHE      '|’
-ROMAN_NUM       [IVXLCDM]
 ARTICLE         (?i:the|an)
 
 %%
 M'
 M‘
-{ROMAN_NUM}[.]{APOSTROPHE}s
-{QUOTE}{EM_DASH}
-{EM_DASH}{QUOTE}
+[[:upper:]][.]{APOSTROPHE}s
 {LQUOTE}"..."
 "*** "(START|END).*\n?.*"***"
 
@@ -71,10 +68,6 @@ M‘
 -{3}                |
 "—-"                |
 "-—"                |
--(["]|“|”|‘)        |
-(["]|“|”|‘)-        |
--{APOSTROPHE}[[:^alnum:]] |
-[[:^alnum:]]{APOSTROPHE}- |
 " ...."             |
 "...."{AN}          |
 "...  "             |
@@ -86,13 +79,22 @@ M‘
 
 [ ]$                error_str("Trailing space");
 
+{EM_DASH}{QUOTE}
+{QUOTE}{EM_DASH}
+{EM_DASH}{APOSTROPHE}[[:^alnum:]]
+[[:^alnum:]]{APOSTROPHE}{EM_DASH}
+
+-(["]|“|”|‘)                |
+(["]|“|”|‘)-                |
+-{APOSTROPHE}[[:^alnum:]]   |
+[[:^alnum:]]{APOSTROPHE}-   error();
+
 [ ]?"..."
 "----"
 "-----File: ".+
 
 {OPEN}              |
 {CLOS}              check_pair(yytext[0]);
-
 {OPEN}[ ]           check_pair(yytext[0]); error();
 [ ]{CLOS}           check_pair(yytext[1]); error();
 

@@ -149,6 +149,7 @@ def test_footnotes(line, curly):
     ('''"Is: 'medicus quisquam--'"''', '“Is: ‘medicus quisquam--’”'),
     ("no matter--'tis but resting", 'no matter--’tis but resting'),
     ('["I--"]', '[“I--”]'),
+    ("'Quote.'--Source.", '‘Quote.’--Source.'),
     ])
 def test_em_dashes(line, curly):
     """Quotation marks next to em dashes."""
