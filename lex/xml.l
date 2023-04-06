@@ -3,6 +3,7 @@
 
 %{
 #include <stdbool.h>
+#include <stdio.h>
 #include <stdlib.h>
 
 /* tagged items in [brackets] */
@@ -31,6 +32,7 @@ static void error(char const * str);
 static void footnote();
 static void four_blanks();
 static void illustration();
+static void internal_error(char const * str);
 static void one_blank();
 static void page();
 static void push_tag(tag_type t);
@@ -58,7 +60,9 @@ Ill         "[Illustration]"
 IllStart    "[Illustration: "
 SnStart     "[Sidenote: "
 Pb          "-----File: ".*"-----"
-TnChange    \[[^\]\n]*\]
+TnIns       "["[^\]\n]+"]"
+TnDel       "{"[^{\n]+"}"
+TnChange    {TnIns}|{TnDel}
 
 %%
 {Anchor}        anchor();
@@ -128,6 +132,7 @@ static tag_type pop_tag() {
         }
     else {
         error("Tag stack empty");
+        exit(1);
         }
 
     return t;
@@ -139,8 +144,7 @@ static void push_tag(tag_type t) {
         s_tag_cnt++;
         }
     else {
-        error("Fatal: Tag stack full");
-        exit(1);
+        internal_error("Tag stack full");
         }
 }
 
@@ -158,8 +162,7 @@ static void close_bracket() {
             printf("]");
             break;
         default:
-            error("Fatal: Tag stack corrupt");
-            exit(1);
+            internal_error("Tag stack corrupt");
             break;
     }
 }
@@ -185,19 +188,26 @@ static void anchor() {
 static void class_start() {
     char const * class;
     char const * tag;
+    size_t class_len;
     char type;
+
+    /* min length: <d c> */
+    if (yyleng < 5) {
+        internal_error("Incomplete class tag");
+        return;
+    }
 
     type = yytext[1];
     class = &yytext[3];
-    yytext[yyleng-1] = 0; /* trim final '>' */
+    class_len = yyleng - 4;
 
     switch (type) {
         case 'd': tag = "div";  break;
         case 'p': tag = "p";    break;
         case 's': tag = "span"; break;
         default:
-            error("Fatal: Invalid tag abbreviation");
-            exit(1);
+            internal_error("Unhandled tag abbreviation");
+            return;
     }
 
     if (type == 'd') {
@@ -209,7 +219,9 @@ static void class_start() {
         s_txt = TXT_P;
     }
 
-    printf("<%s class='%s'>", tag, class);
+    printf("<%s class='", tag);
+    fwrite(class, 1, class_len, stdout);
+    printf("'>");
 }
 
 static void footnote() {
@@ -342,31 +354,43 @@ static void error(char const * str) {
     s_is_error = true;
 }
 
-/* Transcriber's Note
-    Replacement:
-    Fix a [wrd=word]
+static void internal_error(char const * str) {
+    fprintf(stderr, "line %i: Internal error: %s\n", yylineno, str);
+    exit(1);
+}
 
+/* Transcriber's Note
     Insertion:
     Add a [word]
+
+    Deletion:
+    Remove a {word}
 */
 static void tn() {
-    char * delim;
-    char * part1;
-    char * part2;
+    size_t len;
+    char const * tag;
+    char const * text;
 
-    part1 = &yytext[1];   /* skip  opening [ */
-    yytext[yyleng-1] = 0; /* erase closing ] */
+    /* min length: [] */
+    if (yyleng < 2) {
+        internal_error("Incomplete TN");
+        return;
+    }
 
-    delim = strchr(yytext, '=');
+    text = &yytext[1];
+    len = yyleng - 2;
 
-    if (delim) {
-        *delim = 0;
-        part2 = delim + 1;
-        printf("<del>%s</del><ins>%s</ins>", part1, part2);
-        }
-    else {
-        printf("<ins>%s</ins>", part1);
-        }
+    switch(yytext[0]) {
+        case '[': tag = "ins"; break;
+        case '{': tag = "del"; break;
+        default:
+            internal_error("Invalid TN change");
+            return;
+    }
+
+    printf("<%s>", tag);
+    fwrite(text, 1, len, stdout);
+    printf("</%s>", tag);
 }
 
 int main() {

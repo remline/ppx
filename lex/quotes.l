@@ -1,4 +1,4 @@
-%option noyywrap stack warn
+%option noyywrap warn
 %option outfile="quotes.c"
 
 %{

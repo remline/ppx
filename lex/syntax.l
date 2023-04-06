@@ -1,4 +1,4 @@
-%option noyywrap stack warn yylineno
+%option noyywrap warn yylineno
 %option outfile="syntax.c"
 
 %{

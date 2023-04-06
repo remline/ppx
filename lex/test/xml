@@ -67,7 +67,7 @@ New paragraph at top of page.
 
 New thought.
 
-<tn>Fix punctuation[...]</tn> Although, the <tn>word [wa=was] wrong</tn>.
+<tn>Fix punctuation[...]</tn> Although, the <tn>word {wa}[was] wrong</tn>.
 Support <tn>[]</tn> empty & note.
 
 & can begin p.
@@ -92,3 +92,7 @@ pre1
 pre2
 pre3
 */
+
+<d class>div</d>
+<p green>paragraph</p>
+<s S>span</s>
