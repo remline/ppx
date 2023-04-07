@@ -19,7 +19,7 @@ class BufferedFile:
         self.indent = 0
         self.next_indent = 0
         self.nowrap = False
-        self.wrapper = textwrap.TextWrapper(width=71)
+        self.wrapper = textwrap.TextWrapper(width=71, break_on_hyphens=False)
 
     def close(self):
         self._flush()
