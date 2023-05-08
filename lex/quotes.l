@@ -20,7 +20,7 @@ static void open_ambiguous();
 static void open_with_apostrophe();
 %}
 
-EM_DASH         --|—
+EM_DASH         --|—|―
 LBRACKET        [(\[{]
 TAG_CHARS       [[:alnum:] ]
 OPEN_TAG        <{TAG_CHARS}+>

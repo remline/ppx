@@ -5,3 +5,6 @@ add <toc> support
     text: act as blockquote for
     html: convert numbers at end of line to page links
 validate footnotes per page
+use spans for page breaks
+use spans for transciber's notes
+use auto margin left/right for figures to get them to center

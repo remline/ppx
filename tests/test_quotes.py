@@ -119,6 +119,7 @@ def test_unicode(line, curly):
     ("Nor'-Westers", 'Nor’-Westers'),
     ("will-o'-the-wisp", 'will-o’-the-wisp'),
     ("'but'-ing and 'and'-ing", '‘but’-ing and ‘and’-ing'),
+    ('said―"Horizontal bar', 'said―“Horizontal bar'),
     ])
 def test_punctuation(line, curly):
     """Quotation marks next to punctuation."""
