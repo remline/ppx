@@ -99,6 +99,10 @@ def test_ellipsis(line, sequence):
     ('em dash---too long', '---'),
     ('em dash—-hyphen', '—-'),
     ('hyphen-—em dash', '-—'),
+    ('word-- space', '-- ' ),
+    ('word --space', ' --' ),
+    ('word— space', '— ' ),
+    ('word —space', ' —' ),
     ])
 def test_dashes(line, sequence):
     """Dash errors."""
@@ -263,6 +267,8 @@ def test_line_counter():
     '*** END OF THIS PROJECT GUTENBERG EBOOK ***',
     'the absinthe.',
     'is .25 cm',
+    'of ---- at',
+    'of —— at',
     ])
 def test_valid(line):
     """Valid syntax which should generate no error."""

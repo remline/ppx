@@ -18,7 +18,7 @@ ANP             {AN}|{P}
 D               [[:digit:]]
 P               [.,!?;:]
 
-EM_DASH         --|—
+EM_DASH         --|—|―
 LQUOTE          “|‘
 RQUOTE          ”|’
 QUOTE           ["']|{LQUOTE}|{RQUOTE}
@@ -73,6 +73,8 @@ M‘
 "...."{AN}          |
 "...  "             |
 "....  "            |
+{EM_DASH}[ ]        |
+[ ]{EM_DASH}        |
 [[:^alnum:]]{ARTICLE}{P} |
 ^{ARTICLE}{P}       error();
 "''"$               error();
@@ -84,6 +86,8 @@ M‘
 {QUOTE}{EM_DASH}
 {EM_DASH}{APOSTROPHE}[[:^alnum:]]
 [[:^alnum:]]{APOSTROPHE}{EM_DASH}
+{EM_DASH}{2}[ ]
+[ ]{EM_DASH}{2}
 
 -(["]|“|”|‘)                |
 (["]|“|”|‘)-                |
